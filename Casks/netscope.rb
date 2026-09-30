@@ -8,14 +8,16 @@ cask "netscope" do
   homepage "https://github.com/chinthalarohitho-alt/netscope"
 
   depends_on arch: :arm64
-  depends_on macos: ">= :big_sur"
+  depends_on :macos
 
   app "Netscope.app"
 
   # The app is ad-hoc signed, not notarized; clear the quarantine flag so it opens normally.
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/Netscope.app"]
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args:           ["-dr", "com.apple.quarantine", "{{appdir}}/Netscope.app"],
+        writable_paths: ["Netscope.app"],
+        writable_base:  :appdir
   end
 
   zap trash: [
